@@ -41,10 +41,11 @@ function onFormSubmit(e) {
 }
 
 function onLoadMoreClick() {
+  const search = inputEl.value.trim();
   page += 1;
-  generateMarkup();
+  generateMarkup(search);
   // total += perPage;
-  // console.log(total);
+  console.log(search);
 }
 
 //==============================FUNCTIONS===============
@@ -61,16 +62,16 @@ async function getPosts(search) {
   try {
     const response = await axios(URL);
 
-    if (response.data.hits.length === 0) {
-      Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-    } else {
-      total += response.data.hits.length;
+    total += response.data.hits.length;
 
-      if (response.data.totalHits <= total || response.data.totalHits === 0) {
-        hidesLoadMoreBtn();
-      }
+    if (response.data.totalHits <= total || response.data.totalHits === 0) {
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
+      hidesLoadMoreBtn();
+
+      console.log(response.data.totalHits);
+      console.log('Кнопка має бути прихованою');
     }
 
     console.log(total);
