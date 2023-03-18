@@ -33,7 +33,6 @@ function onFormSubmit(e) {
   if (search) {
     clearMarkup();
     generateMarkup(search);
-    showLoadMoreBtn();
   } else
     Notiflix.Notify.info(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -61,9 +60,11 @@ async function getPosts(search) {
   // console.log(inputEl.value.trim());
   try {
     const response = await axios(URL);
-
+    const data = response.data.hits;
     total += response.data.hits.length;
-
+    if (data.length !== 0) {
+      showLoadMoreBtn();
+    }
     if (response.data.totalHits <= total || response.data.totalHits === 0) {
       Notiflix.Notify.failure(
         "We're sorry, but you've reached the end of search results."
@@ -76,7 +77,7 @@ async function getPosts(search) {
 
     console.log(total);
     console.log(response.data.totalHits);
-    return response.data.hits;
+    return data;
   } catch (error) {
   } finally {
     console.log('🧩');
@@ -116,6 +117,7 @@ async function generateMarkup(search) {
   galleryEl.insertAdjacentHTML('beforeend', markup);
 
   lightbox.refresh();
+  return data;
 }
 
 // Функція очистки розмітки
@@ -125,11 +127,13 @@ function clearMarkup() {
 
 function hidesLoadMoreBtn() {
   btnLoadMoreEl.classList.add('visually-hidden');
+  console.log('кнопку ЗАХОВАЛИ ');
 }
 hidesLoadMoreBtn();
 
 function showLoadMoreBtn() {
   btnLoadMoreEl.classList.remove('visually-hidden');
+  console.log('кнопка ПОКАЗАЛАСЯ');
 }
 
 //******************************************************************************************* */
