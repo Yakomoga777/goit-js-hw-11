@@ -28,13 +28,16 @@ const lightbox = new SimpleLightbox('.gallery a', {});
 function onFormSubmit(e) {
   e.preventDefault();
   page = 1;
+  const search = inputEl.value.trim();
 
-  if (inputEl.value.trim()) {
+  if (search) {
     clearMarkup();
-    generateMarkup();
+    generateMarkup(search);
     showLoadMoreBtn();
-  }
-  console.log(inputEl.value.trim());
+  } else
+    Notiflix.Notify.info(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
 }
 
 function onLoadMoreClick() {
@@ -46,9 +49,9 @@ function onLoadMoreClick() {
 
 //==============================FUNCTIONS===============
 // Функція запиту на сервер
-async function getPosts() {
+async function getPosts(search) {
   const key = '34395621-a4ae5341feaa95111ecdda581';
-  const search = inputEl.value;
+
   const imageType = 'photo';
   const orientation = 'horizontal';
   const safesearch = true;
@@ -57,15 +60,7 @@ async function getPosts() {
   // console.log(inputEl.value.trim());
   try {
     const response = await axios(URL);
-    // if (!search) {
-    //   throw new Error(
-    //     Notiflix.Notify.info(
-    //       'Sorry, there are no images matching your search query. Please try again.'
-    //     )
-    //   );
 
-    // hidesLoadMoreBtn();
-    // }else
     if (response.data.hits.length === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -73,7 +68,7 @@ async function getPosts() {
     } else {
       total += response.data.hits.length;
 
-      if (response.data.totalHits <= total) {
+      if (response.data.totalHits <= total || response.data.totalHits === 0) {
         hidesLoadMoreBtn();
       }
     }
@@ -112,8 +107,8 @@ function createMarkup(item) {
    `;
 }
 // Функція публікації розмітки
-async function generateMarkup() {
-  const data = await getPosts();
+async function generateMarkup(search) {
+  const data = await getPosts(search);
   const markup = data.reduce((acc, item) => {
     return acc + createMarkup(item);
   }, '');
@@ -135,3 +130,5 @@ hidesLoadMoreBtn();
 function showLoadMoreBtn() {
   btnLoadMoreEl.classList.remove('visually-hidden');
 }
+
+//******************************************************************************************* */
