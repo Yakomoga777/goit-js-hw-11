@@ -1,0 +1,25 @@
+@import '~node_modules/modern-normalize/modern-normalize.css';
+@import '../../node_modules/simplelightbox/dist/simple-lightbox.min.css';
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  -webkit-clip-path: inset(100%);
+          clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+p {
+  margin: 0;
+}/*# sourceMappingURL=index.css.map */
