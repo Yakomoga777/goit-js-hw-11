@@ -28,9 +28,13 @@ const lightbox = new SimpleLightbox('.gallery a', {});
 function onFormSubmit(e) {
   e.preventDefault();
   page = 1;
-  clearMarkup();
-  generateMarkup();
-  showLoadMoreBtn();
+
+  if (inputEl.value.trim()) {
+    clearMarkup();
+    generateMarkup();
+    showLoadMoreBtn();
+  }
+  console.log(inputEl.value.trim());
 }
 
 function onLoadMoreClick() {
@@ -49,11 +53,19 @@ async function getPosts() {
   const orientation = 'horizontal';
   const safesearch = true;
   const perPage = 40;
-
+  const URL = `https://pixabay.com/api/?key=${key}&q=${search}&image_type=${imageType}&orientation=${orientation}&safesearch=${safesearch}&per_page=${perPage}&page=${page}`;
+  // console.log(inputEl.value.trim());
   try {
-    const response = await axios(
-      `https://pixabay.com/api/?key=${key}&q=${search}&image_type=${imageType}&orientation=${orientation}&safesearch=${safesearch}&per_page=${perPage}&page=${page}`
-    );
+    const response = await axios(URL);
+    // if (!search) {
+    //   throw new Error(
+    //     Notiflix.Notify.info(
+    //       'Sorry, there are no images matching your search query. Please try again.'
+    //     )
+    //   );
+
+    // hidesLoadMoreBtn();
+    // }else
     if (response.data.hits.length === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -97,26 +109,7 @@ function createMarkup(item) {
   </div>
   </div>
       </a>
-     
    `;
-  //  `<div class="photo-card">
-  //   <img src="${item.previewURL}" alt="${item.tags}" loading="lazy" />
-  //   <div class="info">
-  //     <p class="info-item">${item.likes}
-  //       <b>Likes</b>
-  //     </p>
-  //     <p class="info-item">${item.views}
-  //       <b>Views</b>
-  //     </p>
-  //     <p class="info-item">${item.comments}
-  //       <b>Comments</b>
-  //     </p>
-  //     <p class="info-item">${item.downloads}
-  //       <b>Downloads</b>
-  //     </p>
-  //   </div>
-
-  // </div>`;
 }
 // Функція публікації розмітки
 async function generateMarkup() {
@@ -142,4 +135,3 @@ hidesLoadMoreBtn();
 function showLoadMoreBtn() {
   btnLoadMoreEl.classList.remove('visually-hidden');
 }
-// Плавне прокручування
